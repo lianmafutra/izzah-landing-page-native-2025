@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izzah TV - Televisi Dakwah Jambi</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdn.jsdelivr.net/clappr/latest/clappr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dash-shaka-playback/2.0.4/dash-shaka-playback.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+    html, body {
+    overflow-x: hidden;
+}
+        /* Mengatur font utama */
+        body { font-family: 'Poppins', sans-serif; }
+        
+        /* Definisi Warna Tema */
+        .color-dark-blue-1 { background-color: #202D3F; } /* Biru Paling Gelap */
+        .color-dark-blue-2 { background-color: #2F3E53; } /* Biru Gelap */
+        
+        /* Styling untuk Clappr Player agar responsif */
+        #player {
+            position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+            border-radius: 1rem; border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        #player > div { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
+        
+        /* Kelas untuk Latar Belakang Paralaks di Jumbotron */
+        .parallax-bg {
+            background-image: url('https://izzah.tv/img/bg.jpg');
+            background-size: cover;
+            background-position: inherit;
+            background-attachment: fixed; /* Kunci efek parallax */
+        }
+
+      /* Transisi blur di bawah Jumbotron dengan ujung lebih menyatu */
+.blur-fade-bottom {
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    right: 0;
+    height: 40px; /* bisa diperbesar agar blur lebih smooth */
+    background: linear-gradient(
+        to bottom, 
+        rgba(47, 62, 83, 0) 0%,       /* transparan di atas */
+        rgba(47, 62, 83, 0.3) 40%,    /* mulai muncul blur */
+        rgba(47, 62, 83, 0.6) 70%,    /* medium blur */
+        rgba(47, 62, 83, 0.9) 90%,    /* hampir solid */
+        rgba(47, 62, 83, 0.95) 100%   /* hampir menyatu dengan background footer */
+    );
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+  
+  
+ 
+
+    /* ... (CSS yang sudah ada sebelumnya, jangan dihapus) ... */
+
+    /* === MODIFIKASI PLAYER & TOMBOL PLAY (EFEK RIPPLE) === */
+
+    /* Menargetkan area poster (background player) */
+    .clappr-poster[data-poster] {
+        background-color: rgba(32, 45, 63, 0.7) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        backdrop-filter: blur(10px) !important;
+    }
+
+    /* Menargetkan pembungkus tombol play (.play-wrapper) */
+    [data-poster] .play-wrapper {
+        /* Memaksa posisi ke tengah */
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+
+        /* Properti untuk membuat ikon di dalamnya ikut ke tengah */
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        /* Styling Visual - Tombol Merah */
+        background-color: #EF4444 !important;
+        border-radius: 50% !important;
+        width: 80px !important;
+        height: 80px !important;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4) !important;
+        transition: all 0.3s ease;
+        /* Hapus animasi pulse yang lama */
+    }
+
+    /* Efek saat kursor mouse berada di atas tombol */
+    [data-poster] .play-wrapper:hover {
+        background-color: #DC2626 !important;
+        transform: translate(-50%, -50%) scale(1.1) !important;
+    }
+
+    /* Menargetkan ikon SVG di dalam tombol (.poster-icon) */
+    [data-poster] .poster-icon {
+        fill: white !important;
+        width: 40% !important;
+        height: 40% !important;
+    }
+
+    /* === EFEK RIPPLE BARU DIMULAI DI SINI === */
+
+    /* Membuat elemen semu (pseudo-elements) untuk riak */
+    [data-poster] .play-wrapper::before,
+    [data-poster] .play-wrapper::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        width: 100%;
+        height: 100%;
+        
+        /* Menerapkan animasi ripple */
+        animation: ripple 2.5s linear infinite;
+    }
+
+    /* Memberi jeda pada riak kedua agar tidak bersamaan */
+    [data-poster] .play-wrapper::after {
+        animation-delay: 1.25s;
+    }
+
+    /* Keyframes untuk animasi "ripple" */
+    @keyframes ripple {
+        0% {
+            width: 100%;
+            height: 100%;
+            opacity: 0.7;
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); /* Bayangan awal */
+        }
+        100% {
+            width: 175%; /* Ukuran riak saat memudar */
+            height: 175%;
+            opacity: 0;
+            box-shadow: 0 0 0 25px rgba(239, 68, 68, 0); /* Bayangan akhir */
+        }
+    }
+
+
+
+    
+   .pattern-bg {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px; /* jarak antar garis lebih lebar */
+}
+
+.pattern-bg2 {
+    background-color: #0f172a;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+@keyframes ripple1 {
+  0% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.3); opacity: 0; }
+  100% { transform: scale(1); opacity: 0.5; }
+}
+
+@keyframes ripple2 {
+  0% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 0.3; }
+}
+
+.animate-ripple1 {
+  animation: ripple1 2s infinite;
+  pointer-events: none;
+}
+
+.animate-ripple2 {
+  animation: ripple2 3s infinite;
+  pointer-events: none;
+}
+
+
+
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+
+    <main>
+<div id="infoPopup" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[9999] hidden p-4">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-xs sm:max-w-md flex flex-col max-h-[90vh]">
+
+    <div class="p-4 sm:p-6 border-b flex-shrink-0">
+      <h2 class="text-xl sm:text-2xl font-semibold">📢 Informasi Daurah</h2>
+    </div>
+
+    <div class="p-4 sm:p-6 text-sm sm:text-base overflow-y-auto flex-1">
+       <table class="mb-3 w-full">
+        <tr>
+          <td class="align-top pr-2">🗓</td>
+          <td class="pb-2"><strong>Hari/Tanggal:</strong> Ahad Pagi, 07 September 2025</td>
+        </tr>
+        <tr>
+          <td class="align-top pr-2">🕖</td>
+          <td class="pb-2"><strong>Waktu:</strong> Fulltime (07.00 – 17.00 WIB)</td>
+        </tr>
+        <tr>
+          <td class="align-top pr-2">💰</td>
+          <td class="pb-2"><strong>Biaya:</strong> Gratis Terbuka Untuk Umum</td>
+        </tr>
+        <tr>
+          <td class="align-top pr-2">📚</td>
+          <td class="pb-2"><strong>Materi:</strong> Kitab Ushulus Tsalasah, karya Muhammad At-Tamimi رحمه الله</td>
+        </tr>
+        <tr>
+          <td class="align-top pr-2">👤</td>
+          <td class="pb-2"><strong>Pemateri:</strong> Ustaz Salman Abu Hana, Lc</td>
+        </tr>
+        <tr>
+          <td class="align-top pr-2">📍</td>
+          <td class="pb-2">
+            <strong>Lokasi:</strong> Masjid Ubay Bin Ka’ab<br>
+            <span class="text-gray-500">Jln Golf 2 No 49 Rt 12 Kel. Pematang Sulur Kec. Telanaipura Kota Jambi</span><br>
+            <a href="https://www.google.com/maps/search/?api=1&query=Masjid+Ubay+Bin+Ka'ab,+Jambi" target="_blank" class="text-blue-600 hover:underline">
+              Klik untuk lihat lokasi
+            </a>
+          </td>
+        </tr>
+      </table>
+      
+
+
+    <div class="mt-6 border-t pt-4">
+  <h3 class="font-semibold mb-3">Info Flyer</h3>
+  <div class="flex flex-col sm:flex-row sm:space-x-4">
+    <div class="w-full mb-3 sm:w-1/2 cursor-pointer group" onclick="openModal('imageModal2')">
+      <img src="https://izzah.tv/img/info2.jpg" alt="Fasilitas makan siang" class="rounded-lg shadow-md group-hover:shadow-lg transition w-full object-cover">
+    </div>
+    <div class="w-full sm:w-1/2 mb-4 sm:mb-0 cursor-pointer group" onclick="openModal('imageModal1')">
+      <img src="https://izzah.tv/img/info1.jpg" alt="Suasana sesi belajar" class="rounded-lg shadow-md group-hover:shadow-lg transition w-full object-cover">
+    </div>
+  </div>
+</div>
+<div id="imageModal1" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99999] hidden p-4">
+  <div class="bg-white p-4 sm:p-6 rounded-lg shadow-xl max-w-lg w-full relative">
+    <button class="absolute -top-2 -right-2 bg-white rounded-full h-8 w-8 flex items-center justify-center text-gray-600 hover:text-gray-900 text-2xl" onclick="closeModal('imageModal1')">×</button>
+    <h3 class="text-lg font-bold mb-4"></h3>
+    <img src="https://izzah.tv/img/info1.jpg" alt="Suasana sesi belajar" class="rounded-lg w-full">
+  </div>
+</div>
+
+<!-- Modal 2 -->
+<div id="imageModal2" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[99999] hidden p-4">
+  <div class="bg-white p-4 sm:p-6 rounded-lg shadow-xl max-w-lg w-full relative">
+    <button class="absolute -top-2 -right-2 bg-white rounded-full h-8 w-8 flex items-center justify-center text-gray-600 hover:text-gray-900 text-2xl" onclick="closeModal('imageModal2')">×</button>
+    <h3 class="text-lg font-bold mb-4"></h3>
+    <img src="https://izzah.tv/img/info2.jpg" alt="Fasilitas makan siang" class="rounded-lg w-full">
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  function openModal(id) {
+    document.getElementById(id).classList.remove('hidden');
+  }
+  function closeModal(id) {
+    document.getElementById(id).classList.add('hidden');
+  }
+</script>
+    </div>
+
+<!-- Footer tombol sticky -->
+<div class="sticky bottom-0">
+  <div class="relative p-4 border-t border-white/20 bg-white/30 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.1)]">
+    
+    <!-- Indikasi konten bisa discroll (gradient atas) -->
+    <div class="absolute -top-6 left-0 right-0 h-6 bg-gradient-to-t from-white/60 via-white/20 to-transparent pointer-events-none"></div>
+
+    <div class="flex flex-col sm:grid sm:grid-cols-2 sm:gap-x-3 relative">
+      <!-- Tombol Daftar -->
+      <button id="btnRegister" class="order-1 sm:order-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition flex items-center justify-center space-x-2 w-full shadow-md">
+        <span>Lanjutkan Pendaftaran</span>
+        <span>➡️</span>
+      </button>
+
+      <!-- Tombol Tidak Terima Kasih -->
+      <button id="btnDismiss" class="order-3 sm:order-1 mt-2 sm:mt-0 px-4 py-2 bg-gray-200/80 backdrop-blur-sm rounded-xl hover:bg-gray-300 transition w-full shadow-sm">
+        Tidak, Terima Kasih
+      </button>
+
+      <!-- Link Login -->
+      <div class="order-2 sm:order-3 sm:col-span-2 text-center mt-2 sm:mt-4">
+        <a href="https://daurah.izzah.tv/login" class="text-sm text-blue-600 hover:underline">
+          Sudah daftar? Login disini
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  
+
+
+
+
+
+
+
+
+<header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out">
+    <div class="container mx-auto px-4 py-3 flex justify-center items-center">
+        <img id="header-logo" src="https://izzah.tv/img/logo_izzah.png" alt="Logo Header Izzah TV" 
+             class="h-12 opacity-0 scale-90 transition-all duration-500 ease-in-out">
+    </div>
+</header>
+
+<section class="relative color-dark-blue-1 text-white min-h-[70vh] md:min-h-screen flex items-center justify-center text-center">
+    
+    <div class="absolute inset-0 z-0 parallax-bg"></div>
+    <div class="absolute inset-0 z-0 bg-black/60"></div> 
+    
+    <div class="relative z-10 p-6 pt-24" data-aos="fade-in" data-aos-duration="1000">
+        
+    
+ <div class="relative mx-auto mb-6 w-max">
+    <img id="hero-logo" src="https://izzah.tv/img/logo_izzah.png" 
+         alt="Logo Utama Izzah TV"
+         class="h-24 md:h-28 mx-auto relative z-10">
+
+    <!-- Layer 1 -->
+    <span class="absolute inset-0 rounded-full bg-white/20 animate-ripple1"></span>
+    <!-- Layer 2 -->
+    <span class="absolute inset-0 rounded-full bg-white/15 animate-ripple2"></span>
+</div>
+
+        <h1 class="text-3xl md:text-5xl font-bold leading-normal mb-4" data-aos="fade-up" data-aos-delay="200">
+            Televisi Dakwah dari Kota Jambi
+        </h1>
+        <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-gray-200" data-aos="fade-up" data-aos-delay="400">
+            Saksikan siaran kami melalui satelit untuk menjangkau lebih banyak pemirsa.
+        </p>
+           <!-- Box info satelit -->
+     
+<div class="mb-5 md:mb-0 bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-6 max-w-md md:max-w-2xl mx-auto border border-white/20 transition-all duration-300 neon-bottom" data-aos="fade-up" data-aos-delay="600">
+   <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-300/30">
+    <div class="py-3 px-2">
+        <p class="text-sm font-semibold text-gray-200">Satelit</p>
+        <p class="font-bold text-lg md:text-xl">Telkom 4</p>
+    </div>
+    <div class="py-3 px-2">
+        <p class="text-sm font-semibold text-gray-200">Frekuensi</p>
+        <p class="font-bold text-lg md:text-xl">3620 MHz</p>
+    </div>
+    <div class="py-3 px-2">
+        <p class="text-sm font-semibold text-gray-200">Polaritas</p>
+        <p class="font-bold text-lg md:text-xl">Horizontal</p>
+    </div>
+    <div class="py-3 px-2">
+        <p class="text-sm font-semibold text-gray-200">Symbol Rate</p>
+        <p class="font-bold text-lg md:text-xl">32700</p>
+    </div>
+   </div>
+</div>
+
+
+        </div>
+    </div>
+    <div class="blur-fade-bottom z-10"></div>
+</section>
+
+    <section id="streaming" class="py-12 md:py-20 color-dark-blue-2 text-white relative pattern-bg">
+    <div class="container mx-auto px-4">
+        
+        <h2 class="text-3xl md:text-4xl font-bold text-center" data-aos="fade-up">Live Streaming</h2>
+        
+        <div class="w-16 h-1 bg-red-600 rounded mx-auto mt-2 mb-4" data-aos="fade-up"></div>
+        <p class="text-center text-gray-200 mb-8" data-aos="fade-up" data-aos-delay="100">Saksikan siaran kami secara langsung dimanapun Anda berada.</p>
+        
+        <div class="max-w-4xl mx-auto" data-aos="zoom-in-up" data-aos-delay="200">
+            <div class="bg-gray-900/50 p-4 md:p-6 rounded-2xl border border-gray-700 shadow-2xl">
+                <div class="rounded-lg overflow-hidden">
+                    <div id="player"></div>
+                </div>
+            </div>
+            <div class="w-48 h-2 mx-auto mt-2 bg-gray-700 rounded-b-lg"></div>
+        </div>
+        </div>
+</section>
+
+      <section id="download-app" class="color-dark-blue-2 text-white py-16 md:py-24 relative">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-5xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div data-aos="fade-right">
+                    <h2 class="text-3xl md:text-4xl font-bold leading-snug md:leading-normal mb-4">
+                        Dapatkan Lebih Banyak Fitur dengan Mengunduh Aplikasi Izzah Tv Melalui Playstore
+                    </h2>
+                    <p class="text-base md:text-lg text-gray-300">
+                        Fitur : Izzah Streaming, Radio Streaming, Artikel, Dzikir Pagi Petang, store, dan yang lainnya.
+                    </p>
+                    <div class="flex justify-center md:justify-start mt-8">
+                        <a href="https://play.google.com/store/apps/details?id=com.sunflower.izzah&hl=en-US" 
+                           class="inline-block transition-transform transform hover:scale-105" 
+                           title="Download di Google Play">
+                            <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" 
+                                 alt="Get it on Google Play" 
+                                 class="h-20 md:h-24 w-auto">
+                        </a>
+                    </div>
+                </div>
+                <div class="flex justify-center md:justify-end" data-aos="fade-left" data-aos-delay="200">
+                    <img src="https://izzah.tv/img/phone.png" alt="Screenshot Aplikasi Izzah TV" class="max-w-xs md:max-w-[280px] rounded-2xl shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="color-dark-blue-1 text-white pattern-bg2 ">
+    <div class="container mx-auto px-4 py-16 relative z-10"> 
+        <div class="max-w-5xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-x-16 items-center">
+                <div data-aos="fade-right">
+                    
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.248463807677!2d103.5677283!3d-1.6073309!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e25894ce5200923%3A0xb6bc8ca1f2a19c76!2sStudio%20Izzah%20TV%20dan%20Radio%20Salam%20Jambi!5e0!3m2!1sen!2sid!4v1756740419787!5m2!1sen!2sid" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="rounded-lg shadow-xl"></iframe>
+                    
+                    
+                   
+                </div>
+              <div data-aos="fade-left" data-aos-delay="200" class="mt-10 md:mt-0">
+                    <h2 class="text-3xl font-bold">Kontak Kami</h2>
+                    <div class="w-16 h-1 bg-red-600 rounded mt-2 mb-8"></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-300 tracking-wider mb-2">LOCATION</h3>
+                            <p class="text-gray-100">Jl. Golf II, Pematang Sulur, Kec. Telanaipura, Kota Jambi, Jambi 36361</p>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-300 tracking-wider mb-2">CONTACT US</h3>
+                            <p class="text-gray-100">Phone : 0821-8062-3333</p>
+                            <p class="text-gray-100">Email : tvizzah@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <h3 class="font-bold text-lg text-gray-300 tracking-wider mb-3">FOLLOW US</h3>
+                        <div class="flex items-center gap-4">
+                             <a href="https://www.facebook.com/Salamjambitv" class="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v2.385z"/></svg></a>
+                             <a href="https://www.instagram.com/izzah.tv/reels/" class="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919 4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441 1.441-.645 1.441-1.441-.645-1.44-1.441-1.44z"/></svg></a>
+                             <a href="https://www.youtube.com/@IzzahTV" class="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg></a>
+                             <!--<a href="#" class="bg-white/10 p-3 rounded-full hover:bg-white/20 transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.1,6.2C17.4,6.8,16,8.2,16,10H8c0-1.8-1.4-3.2-3.1-3.8C3.2,5.5,2,6.8,2,8.6v6.2c0,1.2,0.7,2.3,1.8,2.8 c1.1,0.5,2.4,0.5,3.5-0.1c1.3-0.7,2.2-2,2.2-3.5h5c0,1.5,0.9,2.8,2.2,3.5c1.1,0.6,2.4,0.6,3.5,0.1c1.1-0.5,1.8-1.6,1.8-2.8V8.6 C22,6.8,20.8,5.5,19.1,6.2z M7,13c0,0.6-0.4,1-1,1s-1-0.4-1-1s0.4-1,1-1S7,12.4,7,13z M19,13c0,0.6-0.4,1-1,1s-1-0.4-1-1 s0.4-1,1-1S19,12.4,19,13z"/></svg></a>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="border-t border-white/10 text-center py-6 relative z-10">
+        <p class="text-gray-400 text-sm">© 2025 Izzah TV. Seluruh Hak Cipta Dilindungi.</p>
+    </div>
+</footer>
+    </main>
+
+ 
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+    
+    document.addEventListener("DOMContentLoaded", function() {
+    // tampilkan popup saat halaman dibuka
+    document.getElementById('infoPopup').classList.add('hidden');
+
+    // tombol dismiss
+    document.getElementById('btnDismiss').addEventListener('click', function() {
+        document.getElementById('infoPopup').classList.add('hidden');
+    });
+
+    // tombol lanjutkan pendaftaran
+    document.getElementById('btnRegister').addEventListener('click', function() {
+        window.location.href = "https://daurah.izzah.tv/pendaftaran"; // ganti dengan URL halaman pendaftaran
+    });
+});
+        // Inisialisasi AOS
+        AOS.init({
+            duration: 800, // Durasi animasi
+            once: true,    // Animasi hanya terjadi sekali
+        });
+
+        // Menunggu semua konten halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efek Header saat scroll
+            const header = document.getElementById('header');
+            const logo = document.getElementById('logo');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('bg-[#202D3F]/80', 'backdrop-blur-lg', 'shadow-lg');
+                    logo.classList.remove('md:h-14');
+                    logo.classList.add('md:h-12');
+                } else {
+                    header.classList.remove('bg-[#202D3F]/80', 'backdrop-blur-lg', 'shadow-lg');
+                    logo.classList.add('md:h-14');
+                    logo.classList.remove('md:h-12');
+                }
+            });
+
+            // Inisialisasi Clappr Player
+            var player = new Clappr.Player({
+                parentId: '#player',
+                source: 'https://streaming.radiosalamjambi.com/izzahtv.m3u8',
+                autoPlay: false,
+                poster: "https://izzah.tv/img/thum_streaming.png`",
+                plugins: [DashShakaPlayback],
+                width: '100%', height: '100%', aspectRatio: '16:9'
+            });
+        });
+        
+
+    // Inisialisasi AOS (Animate on Scroll)
+    AOS.init({
+        duration: 800, // Durasi animasi
+        once: true,    // Animasi hanya terjadi sekali
+    });
+
+    // Menunggu semua konten halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Mengambil elemen-elemen yang akan dianimasikan
+        const header = document.getElementById('header');
+        const heroLogo = document.getElementById('hero-logo');
+        const headerLogo = document.getElementById('header-logo');
+        
+        // Menambahkan event listener untuk scroll
+        window.addEventListener('scroll', () => {
+            // Tentukan titik scroll untuk memicu animasi (misalnya, 150px)
+            if (window.scrollY > 150) {
+                // ---- KONDISI SAAT SCROLL KE BAWAH ----
+
+                // 1. Tampilkan header bar dengan efek glassmorphism
+                header.classList.add('bg-[#202D3F]/80', 'backdrop-blur-lg', 'shadow-lg');
+                
+                // 2. Tampilkan logo kecil di header
+                headerLogo.classList.remove('opacity-0', 'scale-90');
+                headerLogo.classList.add('opacity-100', 'scale-100');
+
+                // 3. Sembunyikan logo besar di jumbotron
+                heroLogo.classList.add('opacity-0', '-translate-y-4');
+
+            } else {
+                // ---- KONDISI SAAT KEMBALI KE ATAS ----
+
+                // 1. Sembunyikan kembali header bar
+                header.classList.remove('bg-[#202D3F]/80', 'backdrop-blur-lg', 'shadow-lg');
+                
+                // 2. Sembunyikan logo kecil di header
+                headerLogo.classList.add('opacity-0', 'scale-90');
+                headerLogo.classList.remove('opacity-100', 'scale-100');
+
+                // 3. Tampilkan kembali logo besar di jumbotron
+                heroLogo.classList.remove('opacity-0', '-translate-y-4');
+            }
+        });
+
+        // Inisialisasi Clappr Player (tetap sama)
+        var player = new Clappr.Player({
+            parentId: '#player',
+            source: 'https://streaming.radiosalamjambi.com/izzahtv.m3u8',
+            autoPlay: false,
+            poster: "https://izzah.tv/img/thum_streaming.png",
+            plugins: [DashShakaPlayback],
+            width: '100%', height: '100%', aspectRatio: '16:9'
+        });
+    });
+    
+    
+
+    </script>
+
+</body>
+</html>
