@@ -276,14 +276,16 @@
 
 <body class="bg-gray-50 text-gray-800">
 
-   <a href="#daurah-section" onclick="smoothScroll(event)"
+   <a href="#daurah-section" onclick="smoothScroll(event)" id="daurahBtn"
       class="floating-btn flex items-center justify-center bg-gradient-to-r from-blue-500 to-blue-700 text-white py-3 px-5 rounded-full shadow-lg hover:from-blue-600 hover:to-blue-800 transition-all duration-300 ease-in-out transform hover:scale-105 animate-bounce">
       <span class="font-semibold">Daurah Izzah</span>
-      <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      <svg id="arrowIcon" class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
          xmlns="http://www.w3.org/2000/svg">
-         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+         <!-- default: arrow down -->
+         <path id="arrowPath" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
       </svg>
    </a>
+
 
 
    <main>
@@ -765,6 +767,24 @@
             behavior: "smooth"
          });
       }
+
+
+
+      // ganti ikon saat scroll melewati section
+      window.addEventListener('scroll', function () {
+         const section = document.querySelector('#daurah-section');
+         const arrowPath = document.getElementById('arrowPath');
+         const sectionTop = section.offsetTop;
+         const scrollPos = window.scrollY + window.innerHeight / 2;
+
+         if (scrollPos > sectionTop) {
+            // panah ke atas
+            arrowPath.setAttribute("d", "M5 15l7-7 7 7");
+         } else {
+            // panah ke bawah
+            arrowPath.setAttribute("d", "M19 9l-7 7-7-7");
+         }
+      });
 
 
       document.addEventListener("DOMContentLoaded", function () {
